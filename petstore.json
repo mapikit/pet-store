@@ -1,0 +1,250 @@
+{
+  "name": "petStoreAPI",
+  "version": "1.0.0",
+  "dbConnectionString": "mongodb://petStore:1234@localhost:27017",
+  "schemas": [
+    {
+      "format": {
+        "category": { "type": "string" },
+        "name": { "type": "string" },
+        "tags": { "type": "array", "subtype": "string" },
+        "photosUrls": { "type": "array", "subtype": "string" },
+        "status": { "type": "string" }
+      },
+      "name": "pet"
+    },
+    {
+      "format": {
+        "name": { "type": "string" }
+      },
+      "name": "tag"
+    },
+    {
+      "format": {
+        "petId": { "type": "string" },
+        "quantity": { "type": "number" },
+        "shipDate": { "type": "date" },
+        "status": { "type": "string" },
+        "complete": { "type": "boolean" }
+      },
+      "name": "order"
+    },
+    {
+      "format": {
+        "name": { "type": "string" }
+      },
+      "name": "category"
+    },
+    {
+      "name": "user",
+      "format": {
+        "username": { "type": "string" },
+        "firstName": { "type": "string" },
+        "lastName": { "type": "string" },
+        "email": { "type": "string" },
+        "password": { "type": "string" },
+        "phone": { "type": "string" },
+        "userStatus": { "type": "number" }
+      }
+    }
+  ],
+  "envs": [],
+  "businessOperations": [
+    {
+      "name": "createOrGetCategoryByName",
+      "constants": [
+        { "name": "zero", "type": "number", "value": 0 }
+      ],
+      "variables": [],
+      "input": {
+        "name": { "type": "string" }
+      },
+      "output": {
+        "name": { "type": "string" },
+        "_id": { "type": "string" }
+      },
+      "customObjects": [],
+      "configuration": [
+        {
+          "moduleName": "equalTo",
+          "moduleType": "internal",
+          "dependencies": [
+            { "origin": 3, "originPath": "result.getError", "targetPath": "A" }
+          ],
+          "key": 4
+        },
+        {
+          "moduleName": "equalTo",
+          "moduleType": "internal",
+          "dependencies": [
+            { "origin": 6, "originPath": "result.result", "targetPath": "A" },
+            { "origin": "constants", "originPath": "zero", "targetPath": "B" }
+          ],
+          "key": 7
+        },
+        {
+          "moduleName": "and",
+          "moduleType": "internal",
+          "key": 5,
+          "dependencies": [
+            { "origin": 4, "originPath": "result.isEqual", "targetPath": "B" },
+            { "origin": 7, "originPath": "result.isEqual", "targetPath": "A" }
+          ]
+        },
+        {
+          "moduleType": "internal",
+          "moduleName": "arrayLength",
+          "key": 6,
+          "dependencies": [
+            { "origin": 3, "originPath": "result.results", "targetPath": "array" }
+          ]
+        },
+        {
+          "moduleType": "schemaFunction",
+          "moduleName": "get",
+          "modulePackage": "category",
+          "key": 3,
+          "dependencies": [
+            { "origin": "input", "originPath": "name", "targetPath": "query.name.equal_to" },
+            { "origin": "input", "originPath": "name", "targetPath": "asdfoo" }
+          ]
+        },
+        {
+          "moduleType": "schemaFunction",
+          "moduleName": "create",
+          "modulePackage": "category",
+          "key": 8,
+          "dependencies": [
+            { "origin": "input", "originPath": "name", "targetPath": "entity.name" }
+          ]
+        },
+        {
+          "moduleName": "arrayAt",
+          "moduleType": "internal",
+          "key": 9,
+          "dependencies": [
+            { "origin": 3, "originPath": "result.results", "targetPath": "array" },
+            { "origin": "constants", "originPath": "zero", "targetPath": "index" }
+
+          ]
+        },
+        {
+          "moduleType": "internal",
+          "moduleName": "if",
+          "key": 2,
+          "dependencies": [
+            { "origin": 5, "originPath": "result.bothTrue", "targetPath": "boolean" },
+            { "origin": 9, "originPath": "module.found", "targetPath": "ifFalse" },
+            { "origin": 8, "originPath": "module.createdEntity", "targetPath": "ifTrue" }
+          ]
+        },
+        {
+          "moduleName": "output",
+          "moduleType": "output",
+          "dependencies": [
+            { "origin": 2, "originPath": "result.outputValue.name", "targetPath": "name" },
+            { "origin": 2, "originPath": "result.outputValue._id", "targetPath": "_id" }
+          ],
+          "key": 1
+        }
+      ]
+    },
+    {
+      "name": "addPet",
+      "constants": [
+        { "name": "petStatusEnum", "type": "array", "value": ["available", "pending", "sold"] }
+      ],
+      "variables": [],
+      "input": {
+        "petData": { "type": "cloudedObject" }
+      },
+      "configuration": [
+        {
+          "moduleType": "internal",
+          "moduleName": "includes",
+          "key": 2,
+          "dependencies": [
+            { "origin": "constants", "originPath": "petStatusEnum", "targetPath": "array" },
+            { "origin": "input", "originPath": "petData.status", "targetPath": "searchedItem" }
+          ]
+        },
+        {
+          "moduleName": "if",
+          "moduleType": "internal",
+          "key": 3,
+          "dependencies": [
+            { "origin": 2, "originPath": "result.result", "targetPath": "boolean" },
+            { "origin": 2, "originPath": "result.result", "targetPath": "ifFalse" },
+            { "origin": 4, "originPath": "module", "targetPath": "ifTrue" }
+          ]
+        },
+        {
+          "moduleName": "createOrGetCategoryByName",
+          "moduleType": "bop",
+          "key": 7,
+          "dependencies": [
+            { "origin": "input", "originPath": "petData.category.name", "targetPath": "name" }
+          ]
+        },
+        {
+          "moduleName": "create",
+          "moduleType": "schemaFunction",
+          "modulePackage": "pet",
+          "key": 4,
+          "dependencies": [
+            { "origin": "input", "originPath": "petData.status", "targetPath": "entity.status" },
+            { "origin": "input", "originPath": "petData.name", "targetPath": "entity.name" },
+            { "origin": 7, "originPath": "result._id", "targetPath": "entity.category" }
+          ]
+        },
+        {
+          "moduleName": "infoLog",
+          "moduleType": "external",
+          "modulePackage": "logger-meta-functions",
+          "dependencies": [
+            { "origin": 3, "originPath": "result.outputValue", "targetPath": "data" }
+          ],
+          "key": 5
+        },
+        {
+          "modulePackage": "cronjob-protocol",
+          "moduleType": "protocol",
+          "moduleName": "stopJob",
+          "dependencies": [],
+          "key": 6
+        },
+        {
+          "moduleType": "output",
+          "moduleName": "output",
+          "key": 1,
+          "dependencies": [
+            { "origin": 3, "originPath": "result.outputValue", "targetPath": "operationSuccess" },
+            { "origin": 6, "originPath": "result.hjkasd", "targetPath": "doesThisExist" },
+            { "origin": 5 }
+          ]
+        }
+      ],
+      "output": {
+        "operationSuccess": { "type": "boolean" },
+        "code": { "type": "number" }
+      },
+      "customObjects": []
+    }
+  ],
+  "protocols": [
+    {
+      "protocolType": "cronjob-protocol",
+      "configuration": {
+        "bopsName": "addPet",
+        "arguments": { "petData": {
+          "status": "available",
+          "name": "Rigby",
+          "category": {
+            "name": "dog"
+          }
+        }},
+        "periodMillis": 3000
+      }
+    }
+  ]
+}
