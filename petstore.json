@@ -105,7 +105,7 @@
           "modulePackage": "category",
           "key": 3,
           "dependencies": [
-            { "origin": "input", "originPath": "name", "targetPath": "query.name.equal_to" },
+            { "origin": "input", "originPath": "name", "targetPath": "query.name.equal_to" }
           ]
         },
         {
