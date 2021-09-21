@@ -106,7 +106,6 @@
           "key": 3,
           "dependencies": [
             { "origin": "input", "originPath": "name", "targetPath": "query.name.equal_to" },
-            { "origin": "input", "originPath": "name", "targetPath": "asdfoo" }
           ]
         },
         {
@@ -219,7 +218,6 @@
           "key": 1,
           "dependencies": [
             { "origin": 3, "originPath": "result.outputValue", "targetPath": "operationSuccess" },
-            { "origin": 6, "originPath": "result.hjkasd", "targetPath": "doesThisExist" },
             { "origin": 5 }
           ]
         }
