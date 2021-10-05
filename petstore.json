@@ -51,12 +51,120 @@
   "envs": [],
   "businessOperations": [
     {
-      "name": "createOrGetCategoryByName",
+      "name": "createOrGetAllTags",
       "constants": [
-        { "name": "zero", "type": "number", "value": 0 }
+        { "name": "tagSchemaName", "type": "string", "value": "tag" },
+        { "name": "message", "type": "string", "value": "finished loop :D" },
+        { "name": "one", "type": "number", "value": 1 },
+        { "name": "finishMessage", "type": "string", "value": "Finished Creating/Retrieving all tags" }
+      ],
+      "customObjects": [],
+      "variables": [
+        { "name": "iterCount", "type": "number", "initialValue": 0 },
+        { "name": "result", "type": "array", "initialValue": [] }
+      ],
+      "input": {
+        "tags": { "type": "array", "subtype": {
+          "name": { "type": "string" }
+        }}
+      },
+      "output": {
+        "tags": { "type": "array", "subtype": "string" }
+      },
+      "configuration": [
+        {
+          "key": 5,
+          "moduleName": "arrayAt",
+          "moduleType": "internal",
+          "dependencies": [
+            { "origin": "input", "originPath": "tags", "targetPath": "array" },
+            { "origin": "variables", "originPath": "iterCount", "targetPath": "index" }
+          ]
+        },
+        {
+          "moduleName": "createOrGetEntityByName",
+          "moduleType": "bop",
+          "key": 4,
+          "dependencies": [
+            { "origin": 5, "originPath": "result.found.name", "targetPath": "name" },
+            { "origin": "constants", "originPath": "tagSchemaName", "targetPath": "schemaName" }
+          ]
+        },
+        {
+          "moduleName": "arrayPush",
+          "moduleType": "internal",
+          "key": 3,
+          "dependencies": [
+            { "origin": 4, "originPath": "result._id", "targetPath": "item" },
+            { "origin": "variables", "originPath": "result", "targetPath": "targetArray" }
+          ]
+        },
+        {
+          "moduleName": "setVariables",
+          "moduleType": "variable",
+          "dependencies": [
+            { "origin": 3, "originPath": "result.result", "targetPath": "result" }
+          ],
+          "key": 10
+        },
+        {
+          "moduleName": "arrayLength",
+          "moduleType": "internal",
+          "key": 6,
+          "dependencies": [
+            { "origin": "input", "originPath": "tags", "targetPath": "array" }
+          ]
+        },
+        {
+          "moduleType": "external",
+          "moduleName": "infoLog",
+          "modulePackage": "logger-meta-functions",
+          "key": 9,
+          "dependencies": [
+            { "origin": "constants", "originPath": "finishMessage", "targetPath": "data" }
+          ]
+        },
+        {
+          "moduleType": "internal",
+          "moduleName": "forLoop",
+          "key": 2,
+          "dependencies": [
+            { "origin": 10, "originPath": "module", "targetPath": "module" },
+            { "origin": 6, "originPath": "result.result", "targetPath": "quantity" },
+            { "origin": 7, "originPath": "module", "targetPath": "postEach" },
+            { "origin": 9, "originPath": "module", "targetPath": "postAll" }
+          ]
+        },
+        {
+          "moduleType": "variable",
+          "moduleName": "increaseVariables",
+          "key": 7,
+          "dependencies": [
+            { "origin": "variables", "originPath": "iterCount", "targetPath": "iterCount" }
+          ]
+        },
+        {
+          "moduleName": "output",
+          "moduleType": "output",
+          "key": 1,
+          "dependencies": [
+            { "origin": 2 },
+            { "origin": "variables", "originPath": "result", "targetPath": "tags" }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "createOrGetEntityByName",
+      "constants": [
+        { "name": "zero", "type": "number", "value": 0 },
+        { "name": "schemaFunctionName", "type": "string", "value": "schemaFunction" },
+        { "name": "getModuleName", "type": "string", "value": "get" },
+        { "name": "createModuleName", "type": "string", "value": "create" }
       ],
       "variables": [],
       "input": {
+        "schemaName": { "type": "string" },
         "name": { "type": "string" }
       },
       "output": {
@@ -69,7 +177,7 @@
           "moduleName": "equalTo",
           "moduleType": "internal",
           "dependencies": [
-            { "origin": 3, "originPath": "result.getError", "targetPath": "A" }
+            { "origin": 3, "originPath": "result.moduleOutput.getError", "targetPath": "A" }
           ],
           "key": 4
         },
@@ -96,23 +204,79 @@
           "moduleName": "arrayLength",
           "key": 6,
           "dependencies": [
-            { "origin": 3, "originPath": "result.results", "targetPath": "array" }
+            { "origin": 3, "originPath": "result.moduleOutput.results", "targetPath": "array" }
+          ]
+        },
+        {
+          "moduleName": "getSystemFunction",
+          "moduleType": "internal",
+          "key": 33,
+          "dependencies": [
+            { "origin": "constants", "originPath": "schemaFunctionName", "targetPath": "moduleType" },
+            { "origin": "input", "originPath": "schemaName", "targetPath": "modulePackage" },
+            { "origin": "constants", "originPath": "getModuleName", "targetPath": "moduleName" }
+          ]
+        },
+        {
+          "moduleName": "executeWithArgs",
+          "moduleType": "internal",
+          "key": 3,
+          "dependencies": [
+            { "origin": 33, "originPath": "result.callableFunction", "targetPath": "module" },
+            { "origin": "input", "originPath": "name", "targetPath": "arguments.query.name.equal_to" }
+          ]
+        },
+        {
+          "moduleName": "getSystemFunction",
+          "moduleType": "internal",
+          "key": 88,
+          "dependencies": [
+            { "origin": "constants", "originPath": "schemaFunctionName", "targetPath": "moduleType" },
+            { "origin": "input", "originPath": "schemaName", "targetPath": "modulePackage" },
+            { "origin": "constants", "originPath": "createModuleName", "targetPath": "moduleName" }
+          ]
+        },
+        {
+          "moduleName": "executeWithArgs",
+          "moduleType": "internal",
+          "key": 8,
+          "dependencies": [
+            { "origin": 88, "originPath": "result.callableFunction", "targetPath": "module" },
+            { "origin": "input", "originPath": "name", "targetPath": "arguments.entity.name" }
           ]
         },
         {
           "moduleType": "schemaFunction",
           "moduleName": "get",
           "modulePackage": "category",
-          "key": 3,
+          "key": 93289,
           "dependencies": [
-            { "origin": "input", "originPath": "name", "targetPath": "query.name.equal_to" }
+            { "origin": "input", "originPath": "name", "targetPath": "entity.name" }
           ]
         },
         {
           "moduleType": "schemaFunction",
           "moduleName": "create",
           "modulePackage": "category",
-          "key": 8,
+          "key": 84133354,
+          "dependencies": [
+            { "origin": "input", "originPath": "name", "targetPath": "entity.name" }
+          ]
+        },
+        {
+          "moduleType": "schemaFunction",
+          "moduleName": "get",
+          "modulePackage": "tag",
+          "key": 932289,
+          "dependencies": [
+            { "origin": "input", "originPath": "name", "targetPath": "entity.name" }
+          ]
+        },
+        {
+          "moduleType": "schemaFunction",
+          "moduleName": "create",
+          "modulePackage": "tag",
+          "key": 841333154,
           "dependencies": [
             { "origin": "input", "originPath": "name", "targetPath": "entity.name" }
           ]
@@ -122,7 +286,7 @@
           "moduleType": "internal",
           "key": 9,
           "dependencies": [
-            { "origin": 3, "originPath": "result.results", "targetPath": "array" },
+            { "origin": 3, "originPath": "result.moduleOutput.results", "targetPath": "array" },
             { "origin": "constants", "originPath": "zero", "targetPath": "index" }
 
           ]
@@ -134,7 +298,7 @@
           "dependencies": [
             { "origin": 5, "originPath": "result.bothTrue", "targetPath": "boolean" },
             { "origin": 9, "originPath": "module.found", "targetPath": "ifFalse" },
-            { "origin": 8, "originPath": "module.createdEntity", "targetPath": "ifTrue" }
+            { "origin": 8, "originPath": "module.moduleOutput.createdEntity", "targetPath": "ifTrue" }
           ]
         },
         {
@@ -151,7 +315,9 @@
     {
       "name": "addPet",
       "constants": [
-        { "name": "petStatusEnum", "type": "array", "value": ["available", "pending", "sold"] }
+        { "name": "petStatusEnum", "type": "array", "value": ["available", "pending", "sold"] },
+        { "name": "categorySchemaName", "type": "string", "value": "category" },
+        { "name": "tagSchemaName", "type": "string", "value": "tag" }
       ],
       "variables": [],
       "input": {
@@ -178,11 +344,20 @@
           ]
         },
         {
-          "moduleName": "createOrGetCategoryByName",
+          "moduleName": "createOrGetEntityByName",
           "moduleType": "bop",
           "key": 7,
           "dependencies": [
-            { "origin": "input", "originPath": "petData.category.name", "targetPath": "name" }
+            { "origin": "input", "originPath": "petData.category.name", "targetPath": "name" },
+            { "origin": "constants", "originPath": "categorySchemaName", "targetPath": "schemaName" }
+          ]
+        },
+        {
+          "moduleName": "createOrGetAllTags",
+          "moduleType": "bop",
+          "key": 8,
+          "dependencies": [
+            { "origin": "input", "originPath": "petData.tags", "targetPath": "tags" }
           ]
         },
         {
@@ -193,7 +368,8 @@
           "dependencies": [
             { "origin": "input", "originPath": "petData.status", "targetPath": "entity.status" },
             { "origin": "input", "originPath": "petData.name", "targetPath": "entity.name" },
-            { "origin": 7, "originPath": "result._id", "targetPath": "entity.category" }
+            { "origin": 7, "originPath": "result._id", "targetPath": "entity.category" },
+            { "origin": 8, "originPath": "result.tags", "targetPath": "entity.tags" }
           ]
         },
         {
@@ -206,42 +382,46 @@
           "key": 5
         },
         {
-          "modulePackage": "cronjob-protocol",
-          "moduleType": "protocol",
-          "moduleName": "stopJob",
-          "dependencies": [],
-          "key": 6
-        },
-        {
           "moduleType": "output",
           "moduleName": "output",
           "key": 1,
           "dependencies": [
-            { "origin": 3, "originPath": "result.outputValue", "targetPath": "operationSuccess" },
+            { "origin": 3, "originPath": "result.outputValue", "targetPath": "operationResult" },
             { "origin": 5 }
           ]
         }
       ],
       "output": {
-        "operationSuccess": { "type": "boolean" },
-        "code": { "type": "number" }
+        "operationResult": { "type": "boolean", "required": false },
+        "code": { "type": "number", "required": true }
       },
       "customObjects": []
     }
   ],
   "protocols": [
     {
-      "protocolType": "cronjob-protocol",
+      "protocolType": "http-json-meta-protocol",
+      "protocolVersion": "latest",
       "configuration": {
-        "bopsName": "addPet",
-        "arguments": { "petData": {
-          "status": "available",
-          "name": "Rigby",
-          "category": {
-            "name": "dog"
+        "port": 8080,
+        "routes": [
+          {
+            "route": "/pet",
+            "businessOperation": "addPet",
+            "method": "POST",
+            "inputMapConfiguration": [
+              { "origin": "body", "originPath": "status", "targetPath": "petData.status" },
+              { "origin": "body", "originPath": "name", "targetPath": "petData.name" },
+              { "origin": "body", "originPath": "category", "targetPath": "petData.category" },
+              { "origin": "body", "originPath": "tags", "targetPath": "petData.tags" }
+            ],
+            "resultMapConfiguration": {
+              "body": { "result": "operationResult" },
+              "headers": [],
+              "statusCode": 200
+            }
           }
-        }},
-        "periodMillis": 3000
+        ]
       }
     }
   ]
