@@ -15,7 +15,7 @@ We need to have an instance of MongoDB running, and it must have an user with th
 1. First, install MongoDB in your system according to their [website instructions](https://docs.mongodb.com/manual/administration/install-community/).
 1. After that is done, create `mongod.conf` file to have the base configuration of your database saved and ready to go. The details on thw available parameters for that file [are here](https://docs.mongodb.com/manual/reference/configuration-options/). There is also an `example.mongod.conf` file in this repository, which you can use as a base to configure your database, just changing the needed parts.
 1. Change the `path` property on that file to a valid path in your computer.
-1. Change the `security > authorization` value to `disabled`. We will enabled it again after we create our user.
+1. Change the `security > authorization` value to `disabled`. We will enable it again after we create our user.
 1. Run your database with `mongod --config </path/to/your/config>`. The part between `<>` is the path of your database configuration file.
 1. Open another terminal window and access your running database with the `mongosh --port 27017` command. The `port` option should match what you have set up in the other steps.
 1. Type in the command `use("admin")` to switch to the Admin database. We will use this to create our database user.
