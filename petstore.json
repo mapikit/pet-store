@@ -1,7 +1,6 @@
 {
   "name": "petStoreAPI",
   "version": "1.0.0",
-  "dbConnectionString": "mongodb://petStore:1234@localhost:27017",
   "schemas": [
     {
       "format": {
@@ -11,13 +10,17 @@
         "photosUrls": { "type": "array", "subtype": "string" },
         "status": { "type": "string" }
       },
-      "name": "pet"
+      "dbProtocol": "MainMongoDb",
+      "name": "pet",
+      "identifier": "pet"
     },
     {
       "format": {
         "name": { "type": "string" }
       },
-      "name": "tag"
+      "dbProtocol": "MainMongoDb",
+      "name": "tag",
+      "identifier": "tag"
     },
     {
       "format": {
@@ -27,16 +30,22 @@
         "status": { "type": "string" },
         "complete": { "type": "boolean" }
       },
-      "name": "order"
+      "dbProtocol": "MainMongoDb",
+      "name": "order",
+      "identifier": "order"
     },
     {
       "format": {
         "name": { "type": "string" }
       },
-      "name": "category"
+      "dbProtocol": "MainMongoDb",
+      "name": "category",
+      "identifier": "category"
     },
     {
       "name": "user",
+      "identifier": "user",
+      "dbProtocol": "MainMongoDb",
       "format": {
         "username": { "type": "string" },
         "firstName": { "type": "string" },
@@ -159,8 +168,9 @@
       "constants": [
         { "name": "zero", "type": "number", "value": 0 },
         { "name": "schemaFunctionName", "type": "string", "value": "schemaFunction" },
-        { "name": "getModuleName", "type": "string", "value": "get" },
-        { "name": "createModuleName", "type": "string", "value": "create" }
+        { "name": "findModuleName", "type": "string", "value": "find" },
+        { "name": "findByIdModuleName", "type": "string", "value": "findById" },
+        { "name": "insertModuleName", "type": "string", "value": "insert" }
       ],
       "variables": [],
       "input": {
@@ -177,14 +187,6 @@
           "moduleName": "equalTo",
           "moduleType": "internal",
           "dependencies": [
-            { "origin": 3, "originPath": "result.moduleOutput.getError", "targetPath": "A" }
-          ],
-          "key": 4
-        },
-        {
-          "moduleName": "equalTo",
-          "moduleType": "internal",
-          "dependencies": [
             { "origin": 6, "originPath": "result.result", "targetPath": "A" },
             { "origin": "constants", "originPath": "zero", "targetPath": "B" }
           ],
@@ -195,7 +197,7 @@
           "moduleType": "internal",
           "key": 5,
           "dependencies": [
-            { "origin": 4, "originPath": "result.isEqual", "targetPath": "B" },
+            { "origin": 3, "originPath": "result.moduleOutput.success", "targetPath": "B" },
             { "origin": 7, "originPath": "result.isEqual", "targetPath": "A" }
           ]
         },
@@ -204,7 +206,7 @@
           "moduleName": "arrayLength",
           "key": 6,
           "dependencies": [
-            { "origin": 3, "originPath": "result.moduleOutput.results", "targetPath": "array" }
+            { "origin": 3, "originPath": "result.moduleOutput.data", "targetPath": "array" }
           ]
         },
         {
@@ -214,7 +216,7 @@
           "dependencies": [
             { "origin": "constants", "originPath": "schemaFunctionName", "targetPath": "moduleType" },
             { "origin": "input", "originPath": "schemaName", "targetPath": "modulePackage" },
-            { "origin": "constants", "originPath": "getModuleName", "targetPath": "moduleName" }
+            { "origin": "constants", "originPath": "findModuleName", "targetPath": "moduleName" }
           ]
         },
         {
@@ -233,8 +235,64 @@
           "dependencies": [
             { "origin": "constants", "originPath": "schemaFunctionName", "targetPath": "moduleType" },
             { "origin": "input", "originPath": "schemaName", "targetPath": "modulePackage" },
-            { "origin": "constants", "originPath": "createModuleName", "targetPath": "moduleName" }
+            { "origin": "constants", "originPath": "insertModuleName", "targetPath": "moduleName" }
           ]
+        },
+        {
+          "moduleType": "schemaFunction",
+          "moduleName": "find",
+          "modulePackage": "category",
+          "key": 93289,
+          "dependencies": [
+            { "origin": "input", "originPath": "name", "targetPath": "entity.name" }
+          ],
+          "NOTE": "This module is only for internal use (getSystemFunction) and will not be called be other modules"
+        },
+        {
+          "moduleType": "schemaFunction",
+          "moduleName": "findById",
+          "modulePackage": "category",
+          "key": 934589,
+          "dependencies": [],
+          "NOTE": "This module is only for internal use (getSystemFunction) and will not be called be other modules"
+        },
+        {
+          "moduleType": "schemaFunction",
+          "moduleName": "insert",
+          "modulePackage": "category",
+          "key": 84133354,
+          "dependencies": [
+            { "origin": "input", "originPath": "name", "targetPath": "entity.name" }
+          ],
+          "NOTE": "This module is only for internal use (getSystemFunction) and will not be called be other modules"
+        },
+        {
+          "moduleType": "schemaFunction",
+          "moduleName": "find",
+          "modulePackage": "tag",
+          "key": 932289,
+          "dependencies": [
+            { "origin": "input", "originPath": "name", "targetPath": "entity.name" }
+          ],
+          "NOTE": "This module is only for internal use (getSystemFunction) and will not be called be other modules"
+        },
+        {
+          "moduleType": "schemaFunction",
+          "moduleName": "findById",
+          "modulePackage": "tag",
+          "key": 932129,
+          "dependencies": [],
+          "NOTE": "This module is only for internal use (getSystemFunction) and will not be called be other modules"
+        },
+        {
+          "moduleType": "schemaFunction",
+          "moduleName": "insert",
+          "modulePackage": "tag",
+          "key": 841333154,
+          "dependencies": [
+            { "origin": "input", "originPath": "name", "targetPath": "entity.name" }
+          ],
+          "NOTE": "This module is only for internal use (getSystemFunction) and will not be called be other modules"
         },
         {
           "moduleName": "executeWithArgs",
@@ -242,43 +300,7 @@
           "key": 8,
           "dependencies": [
             { "origin": 88, "originPath": "result.callableFunction", "targetPath": "module" },
-            { "origin": "input", "originPath": "name", "targetPath": "arguments.entity.name" }
-          ]
-        },
-        {
-          "moduleType": "schemaFunction",
-          "moduleName": "get",
-          "modulePackage": "category",
-          "key": 93289,
-          "dependencies": [
-            { "origin": "input", "originPath": "name", "targetPath": "entity.name" }
-          ]
-        },
-        {
-          "moduleType": "schemaFunction",
-          "moduleName": "create",
-          "modulePackage": "category",
-          "key": 84133354,
-          "dependencies": [
-            { "origin": "input", "originPath": "name", "targetPath": "entity.name" }
-          ]
-        },
-        {
-          "moduleType": "schemaFunction",
-          "moduleName": "get",
-          "modulePackage": "tag",
-          "key": 932289,
-          "dependencies": [
-            { "origin": "input", "originPath": "name", "targetPath": "entity.name" }
-          ]
-        },
-        {
-          "moduleType": "schemaFunction",
-          "moduleName": "create",
-          "modulePackage": "tag",
-          "key": 841333154,
-          "dependencies": [
-            { "origin": "input", "originPath": "name", "targetPath": "entity.name" }
+            { "origin": "input", "originPath": "name", "targetPath": "arguments.data.name" }
           ]
         },
         {
@@ -286,9 +308,28 @@
           "moduleType": "internal",
           "key": 9,
           "dependencies": [
-            { "origin": 3, "originPath": "result.moduleOutput.results", "targetPath": "array" },
+            { "origin": 3, "originPath": "result.moduleOutput.data", "targetPath": "array" },
             { "origin": "constants", "originPath": "zero", "targetPath": "index" }
+          ]
+        },
 
+        {
+          "moduleName": "getSystemFunction",
+          "moduleType": "internal",
+          "key": 22,
+          "dependencies": [
+            { "origin": "constants", "originPath": "schemaFunctionName", "targetPath": "moduleType" },
+            { "origin": "input", "originPath": "schemaName", "targetPath": "modulePackage" },
+            { "origin": "constants", "originPath": "findByIdModuleName", "targetPath": "moduleName" }
+          ]
+        },
+        {
+          "moduleName": "executeWithArgs",
+          "moduleType": "internal",
+          "key": 21,
+          "dependencies": [
+            { "origin": 22, "originPath": "result.callableFunction", "targetPath": "module" },
+            { "origin": 8, "originPath": "result.moduleOutput.insertedId", "targetPath": "id" }
           ]
         },
         {
@@ -298,7 +339,7 @@
           "dependencies": [
             { "origin": 5, "originPath": "result.bothTrue", "targetPath": "boolean" },
             { "origin": 9, "originPath": "module.found", "targetPath": "ifFalse" },
-            { "origin": 8, "originPath": "module.moduleOutput.createdEntity", "targetPath": "ifTrue" }
+            { "origin": 21, "originPath": "module.moduleOutput.data", "targetPath": "ifTrue" }
           ]
         },
         {
@@ -361,15 +402,15 @@
           ]
         },
         {
-          "moduleName": "create",
+          "moduleName": "insert",
           "moduleType": "schemaFunction",
           "modulePackage": "pet",
           "key": 4,
           "dependencies": [
-            { "origin": "input", "originPath": "petData.status", "targetPath": "entity.status" },
-            { "origin": "input", "originPath": "petData.name", "targetPath": "entity.name" },
-            { "origin": 7, "originPath": "result._id", "targetPath": "entity.category" },
-            { "origin": 8, "originPath": "result.tags", "targetPath": "entity.tags" }
+            { "origin": "input", "originPath": "petData.status", "targetPath": "data.status" },
+            { "origin": "input", "originPath": "petData.name", "targetPath": "data.name" },
+            { "origin": 7, "originPath": "result._id", "targetPath": "data.category" },
+            { "origin": 8, "originPath": "result.tags", "targetPath": "data.tags" }
           ]
         },
         {
@@ -400,8 +441,10 @@
   ],
   "protocols": [
     {
-      "protocolType": "http-json-meta-protocol",
+      "protocol": "http-json-meta-protocol",
       "protocolVersion": "latest",
+      "protocolKind" : "normal",
+      "identifier": "addPetRoute",
       "configuration": {
         "port": 8080,
         "routes": [
@@ -423,6 +466,16 @@
           }
         ]
       }
+    },
+    {
+      "protocol": "@meta-system/mongodb-db-protocol",
+      "identifier": "MainMongoDb",
+      "configuration": {
+        "databaseName": "pet-store",
+        "dbConnectionString": "mongodb://petStore:1234@localhost:27017"
+      },
+      "protocolKind": "dbProtocol",
+      "protocolVersion": "latest"
     }
   ]
 }
